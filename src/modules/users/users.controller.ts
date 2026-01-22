@@ -1,12 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseGuards, Put } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { PermissionsGuard } from 'src/common/guards/permissions.guard';
+import { Permissions } from 'src/common/decorators/permissions.decorator';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Users')
 @Controller('users')
-@UseGuards(JwtAuthGuard, PermissionsGuard)
+@UseGuards(JwtAuthGuard, PermissionsGuard, RolesGuard)
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}
 
@@ -16,6 +20,8 @@ export class UsersController {
     }
 
     @Get()
+    @Roles('admin')
+    @Permissions('user:read')
     findAll() {
         return this.usersService.findAll();
     }
@@ -25,7 +31,7 @@ export class UsersController {
         return this.usersService.findOne(id);
     }
 
-    @Patch(':id')
+    @Put(':id')
     update(@Param('id') id: string, @Body() updateData: Partial<CreateUserDto>) {
         return this.usersService.update(id, updateData);
     }

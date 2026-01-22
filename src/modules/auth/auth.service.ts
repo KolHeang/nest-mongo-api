@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from '../users/schemas/user.schema';
 import { Model } from 'mongoose';
@@ -18,7 +18,7 @@ export class AuthService {
     public async validateUser(email: string, password: string) {
         const user = await this.userModel
             .findOne({ email })
-            .populate({ path: 'role', populate: { path: 'permissions'}})
+            .populate({ path: 'roles', populate: { path: 'permissions'}})
             .exec();
         
         if (!user) {
@@ -43,9 +43,9 @@ export class AuthService {
         const user = await this.validateUser(loginDto.email, loginDto.password);
 
         const payload = {
-        sub: user._id,
-        email: user.email,
-        roles: user.roles?.map(role => role.name) || [],
+            sub: user._id,
+            email: user.email,
+            roles: user.roles?.map(role => role.name) || [],
         };
 
         const accessToken = this.jwtService.sign(payload);
@@ -122,7 +122,7 @@ export class AuthService {
         .exec();
 
         if (!user) {
-        throw new UnauthorizedException('User not found');
+        throw new NotFoundException('User not found');
         }
 
         return user;
