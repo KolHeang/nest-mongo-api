@@ -11,14 +11,13 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,
-      transform: true,
-      transformOptions: {
-        enableImplicitConversion: true,
-      },
     }),
   );
-  app.useGlobalFilters(new MongoExceptionFilter());
-  app.useGlobalFilters(new HttpExceptionFilter());
+  
+  app.useGlobalFilters(
+    new MongoExceptionFilter(),
+    new HttpExceptionFilter(),
+  );
 
 
   app.setGlobalPrefix('api');

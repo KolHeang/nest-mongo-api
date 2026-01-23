@@ -12,7 +12,8 @@ export class CreateUserDto {
     @MinLength(6)
     password: string;
 
-    @IsArray()
     @IsOptional()
+    @IsArray()
+    @IsString({ each: true })
     roles?: string[];
 }

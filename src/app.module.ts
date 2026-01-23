@@ -8,6 +8,10 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { databaseConfig } from './config/database.config';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConfig } from './config/jwt.config';
+import { ProjectsModule } from './modules/projects/projects.module';
+import { TasksModule } from './modules/tasks/tasks.module';
+import { CommentsModule } from './modules/comments/comments.module';
+import { TeamsModule } from './modules/teams/teams.module';
 
 @Module({
     imports: [
@@ -18,6 +22,10 @@ import { jwtConfig } from './config/jwt.config';
         UsersModule,
         RolesModule,
         PermissionsModule,
+        ProjectsModule,
+        TasksModule,
+        CommentsModule,
+        TeamsModule,
     ],
 })
 export class AppModule {}
